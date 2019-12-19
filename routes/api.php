@@ -23,6 +23,8 @@ Route::group(['middleware' => ['cors']], function() {
 
     Route::group(['middleware' => ['jwt.verify']], function() {
         Route::get('/user', 'UserController@getAuthenticatedUser');
+        Route::get('/posts/paginate', 'PostController@getPostsPaginate');
+        Route::get('/posts', 'PostController@index');
     });
 });
 
