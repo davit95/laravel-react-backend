@@ -40,7 +40,14 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $post = new Post;
+        $post->title = $request->get('title');
+        $post->text = $request->get('text');
+        $post->author = $request->get('author');
+        if ($post->save()) {
+            return response()->json(['post' => $post, 'status' => 'success']);
+        }
+        return response()->json(['status' => 'failed']);
     }
 
     /**
@@ -49,9 +56,10 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show($id)
     {
-        //
+        $post = Post::find($id);
+        return response()->json(['post' => $post, 'status' => 'success']);
     }
 
     /**
@@ -72,9 +80,14 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update($id, Request $request)
     {
-        //
+        $post = Post::find($id);
+        $post->title = $request->get('title');
+        $post->text = $request->get('text');
+        $post->author = $request->get('author');
+        $post->update();
+        return response()->json(['post' => $post, 'status' => 'success']);
     }
 
     /**
@@ -83,9 +96,12 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy($id)
     {
-        //
+        if (Post::destroy($id)) {
+            return response()->json(['status' => 'success']);
+        }
+        return response()->json(['status' => 'failed']);
     }
 
     /**
@@ -93,7 +109,7 @@ class PostController extends Controller
      */
     public function getPostsPaginate()
     {
-        $posts = Post::paginate(10);
+        $posts = Post::orderBy('id', 'DESC')->paginate(10);
         $status = !empty($posts) ? 'success' : 'fail';
         return response()->json(compact('posts', 'status'));
     }
