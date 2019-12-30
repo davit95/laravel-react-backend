@@ -82,4 +82,11 @@ class UserController extends Controller
 
         return response()->json(compact('user'));
     }
+
+    public function logout()
+    {
+        $token = JWTAuth::getToken();
+        JWTAuth::invalidate($token);
+        return response()->json(['success' => true]);
+    }
 }

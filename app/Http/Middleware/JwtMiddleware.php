@@ -6,9 +6,25 @@ use Closure;
 use JWTAuth;
 use Exception;
 use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
+use Tymon\JWTAuth\Manager;
 
 class JwtMiddleware
 {
+    /**
+     * @var Manager
+     */
+    protected $manager;
+
+    /**
+     * Controller constructor.
+     *
+     * @param JWTAuth $jwt
+     * @param Manager $manager
+     */
+    public function __construct(Manager $manager)
+    {
+        $this->manager = $manager;
+    }
     /**
      * Handle an incoming request.
      *
@@ -24,7 +40,10 @@ class JwtMiddleware
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
                 return response()->json(['status' => 'Token is Invalid']);
             }else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException){
-                return response()->json(['status' => 'Token is Expired']);
+                // return response()->json([
+                //     'token' => $this->manager->refresh(JWTAuth::getToken())->get()
+                // ]);
+                return response()->json(['status' => 'Token expired']);
             }else{
                 return response()->json(['status' => 'Authorization Token not found']);
             }
